@@ -10,6 +10,7 @@ pipeline {
         }
       }
       steps {
+		sh 'sudo su'
         sh 'npm install -g grunt express'
       }
     } 
