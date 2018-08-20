@@ -1,11 +1,11 @@
 FROM node:9
-USER root
+
 # Create app directory
 WORKDIR /usr/src/app
 
 LABEL maintainer="prince.mathew@itcinfotech.com"
 
-RUN npm install -g grunt express
+RUN sudo npm install -g grunt express
 # For production
 # RUN npm install -g --only=production
 
