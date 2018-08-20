@@ -10,8 +10,7 @@ pipeline {
         }
       }
       steps {
-		sh 'sudo su'
-        sh 'npm install -g grunt express'
+        sh 'sudo npm install -g grunt express'
       }
     } 
 	stage('Docker Build') {
