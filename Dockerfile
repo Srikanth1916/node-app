@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 LABEL maintainer="prince.mathew@itcinfotech.com"
 
-RUN sudo npm install -g grunt express
+RUN npm install -g grunt express
 # For production
 # RUN npm install -g --only=production
 
