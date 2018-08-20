@@ -10,7 +10,7 @@ pipeline {
         }
       }
       steps {
-		sh 'sudo chown -R $USER /usr/local'
+		sh 'chown -R $USER /usr/local'
         sh 'npm install -g grunt express'
       }
     } 
