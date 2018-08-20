@@ -1,5 +1,5 @@
 FROM node:9
-USER sudo
+USER root
 # Create app directory
 WORKDIR /usr/src/app
 
