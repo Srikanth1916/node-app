@@ -26,7 +26,7 @@ node any {
                       userRemoteConfigs                : [[credentialsId: "pm11prince",
                                                            url          : 'https://github.com/pm11prince/node-app.git']]])
                 // Copy all the contents of the current workspace dir to the / dir in the container
-                containerCopy() {}
+                //containerCopy() {}
                 // Run node app.js
                 nodejs(args: 'app.js', background: true) {}
             }
