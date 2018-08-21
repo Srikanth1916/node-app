@@ -38,12 +38,12 @@ pipeline {
 	stage('test in docker') {
       agent {
         docker {
-          image '${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}'
+          image 'prince11itc/node:latest'
           reuseNode true
         }
       }
       steps {
-        sh "./run-tests-in-docker.sh"
+        sh "echo test docker"
       }
     }
 	
