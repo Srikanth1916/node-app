@@ -28,7 +28,7 @@ pipeline {
 	stage('Docker Pull') {
       agent any
       steps {
-        withCredentials([usernamePassword(credentialsId: ${params.DOCKERHUB_CREDETIAL_ID}, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        withCredentials([usernamePassword(credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}", passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
           sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
           sh "docker pull ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}"
         }
