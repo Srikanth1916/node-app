@@ -1,9 +1,7 @@
 #!groovy
 
 pipeline {
-  agent {
-      dockerfile true
-   }
+  agent none
   stages {
     stage('Docker Build') {
       agent any
