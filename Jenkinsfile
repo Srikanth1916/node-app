@@ -45,6 +45,7 @@ pipeline {
             }
 
             steps {
+				sh 'll'
                 sh 'npm install -g'
                 sh 'node server'
             }
