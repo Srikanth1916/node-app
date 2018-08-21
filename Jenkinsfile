@@ -35,6 +35,18 @@ pipeline {
       }
     }
 	
+	stage('test in docker') {
+      agent {
+        docker {
+          image '${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}'
+          reuseNode true
+        }
+      }
+      steps {
+        sh "./run-tests-in-docker.sh"
+      }
+    }
+	
 		
 	}
 }
