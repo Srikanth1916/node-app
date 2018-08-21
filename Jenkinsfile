@@ -11,7 +11,7 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-	   sh 'docker build -t ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}" .'
+	   sh "docker build -t ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG} ."
         }
     }
 	
