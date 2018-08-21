@@ -35,17 +35,7 @@ pipeline {
       }
     }
 	
-	stage('Docker Pull') {
-	
-	docker.image("prince11itc/node:latest").inside("-v /home/jenkins/foo.txt:/foo.txt") { c ->
-                 sh 'cat /foo.txt' // we can mount any file from host
-                 sh 'cat test.txt' // we can access files from workspace
-                 sh 'echo "modified-inside-container" > test.txt' // we can modify files in workspace
-                 sh 'go build' // we can run command from docker image
-                 sh 'printenv' // jenkins is passing all envs variables into container
-             }
-  }
-  }
+	}
 }
 
 
