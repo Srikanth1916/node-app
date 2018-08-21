@@ -31,9 +31,24 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}", passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
           sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
           sh "docker pull ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}"
+		  
         }
       }
     }
+	
+	stage('Copy the code and build') {
+            agent {
+                docker {
+                    image "${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}"
+                    args '-v ${PWD}:/app -w /app/server'
+                }
+            }
+
+            steps {
+                sh 'npm install -g'
+                sh 'node server'
+            }
+        }
 	
 	}
 }
