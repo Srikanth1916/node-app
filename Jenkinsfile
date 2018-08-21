@@ -7,6 +7,7 @@ pipeline {
       agent any
       steps {
 	   sh 'echo in docker build'
+	   sh 'docker build -t prince11itc/node:latest .'
         }
     }
 	
