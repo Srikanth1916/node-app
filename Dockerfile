@@ -5,4 +5,7 @@ WORKDIR /app/server
 
 LABEL maintainer="prince.mathew@itcinfotech.com"
 
+RUN npm install -g grunt 
+RUN npm install -g express
+
 EXPOSE 5000
