@@ -1,55 +1,36 @@
-#!groovy
+node {
+    def app
 
-pipeline {
-  agent none
-  parameters {
-        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
-		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
-		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
-		}
-  stages {
-    stage('Docker Build') {
-      agent any
-      steps {
-	   sh "docker build -t ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG} ."
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
+
+        checkout scm
+    }
+
+    stage('Build image') {
+        /* This builds the actual image; synonymous to
+         * docker build on the command line */
+
+        app = docker.build("prince11itc/node:latest")
+    }
+
+    stage('Test image') {
+        /* Ideally, we would run a test framework against our image.
+         * For this example, we're using a Volkswagen-type approach ;-) */
+
+        app.inside {
+            sh 'echo "Tests passed"'
         }
     }
-	
-	 stage('Docker Push') {
-      agent any
-      steps {
-        withCredentials([usernamePassword(credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}", passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh "docker push ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}"
+
+    stage('Push image') {
+        /* Finally, we'll push the image with two tags:
+         * First, the incremental build number from Jenkins
+         * Second, the 'latest' tag.
+         * Pushing multiple tags is cheap, as all the layers are reused. */
+        docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
         }
-      }
     }
-	
-	stage('Docker Pull') {
-      agent any
-      steps {
-        withCredentials([usernamePassword(credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}", passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh "docker pull ${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}"
-        }
-      }
-    }
-	
-	stage('test in docker') {
-      agent {
-        docker {
-          image 'prince11itc/node:latest'
-          reuseNode true
-        }
-      }
-      steps {
-        sh "echo test docker"
-      }
-    }
-	
-		
-	}
 }
-
-
-
