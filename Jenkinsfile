@@ -8,7 +8,8 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-        sh 'docker build -t prince11itc/node:latest .'
+	   sh 'echo in docker build'
+        #sh 'docker build -t prince11itc/node:latest .'
       }
     }
 	
