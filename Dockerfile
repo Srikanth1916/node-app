@@ -5,6 +5,7 @@ WORKDIR /app/server
 ADD . /app
 LABEL maintainer="prince.mathew@itcinfotech.com"
 
+RUN npm install -g
 RUN npm install -g grunt 
 RUN npm install -g express
 # For production
