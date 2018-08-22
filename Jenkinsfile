@@ -33,7 +33,7 @@ node {
 	
 	stage('Build code and run app') {
 	app.inside {
-        sh 'containerId= $(cat /proc/1/cpuset | cut -c 1-12)'
+        sh 'containerId= $(cat /proc/1/cpuset | cut -c 9-21)'
 		 }
 		 
 		sh 'echo "containerId= ${containerId}"' 
