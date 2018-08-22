@@ -33,11 +33,11 @@ node {
 	
 	stage('Build code and run app') {
 	app.inside {
-        sh 'containerId= $(cat /proc/1/cpuset | cut -c9-20)'
+        sh 'containerId= $(cat /proc/1/cpuset | cut -c9-)'
 		 }
 		sh 'sudo docker ps -a'
 		sh 'echo "containerId= ${containerId}"' 
-		sh 'sudo docker cp $PWD/. containerId:/app'
+		sh 'sudo docker cp ${workspace}/. containerId:/app'
         app.inside {
 			sh 'npm install -g'
 			sh 'node start'
