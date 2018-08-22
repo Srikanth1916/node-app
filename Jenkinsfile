@@ -38,10 +38,12 @@ node {
 		sh 'sudo docker ps -a'
 		sh 'echo "containerId= ${containerId}"' 
 		sh 'sudo docker cp ${workspace}/. containerId:/app'*/
-        app.inside {
-			sh 'll /app'
-			sh 'npm install -g'
-			sh 'node start'
+        app.inside('-v $WORKSPACE:/app -u root') {
+			sh """
+			ll /app
+			npm install -g
+			node start
+			""" 
         }
     }
 	
