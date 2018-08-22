@@ -40,7 +40,7 @@ node {
 		sh 'sudo docker cp ${workspace}/. containerId:/app'*/
         app.inside('-v $WORKSPACE:/app -u root') {
 			sh """
-			ll /app
+			ls /app
 			npm install -g
 			node start
 			""" 
