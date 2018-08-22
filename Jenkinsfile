@@ -5,7 +5,7 @@ node {
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
 
-        checkout scm
+        //checkout scm
     }
 
     stage('Build image') {
@@ -38,12 +38,13 @@ node {
 		sh 'sudo docker ps -a'
 		sh 'echo "containerId= ${containerId}"' 
 		sh 'sudo docker cp ${workspace}/. containerId:/app'*/
+		
+		//checkout scm
         app.inside('-v $WORKSPACE:/app -u root') {
 			sh """
-			ls /app
 			cd /app/server
 			npm install -g
-			nohup node server
+			forever start server.js
 			""" 
         }
     }
