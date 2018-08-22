@@ -28,7 +28,7 @@ node {
                 // Copy all the contents of the current workspace dir to the / dir in the container
                 // containerCopy() {}
                 // Run node app.js
-                //nodejs(args: 'app.js', background: true) {}
+                nodejs(args: 'server.js', background: true) {}
     }
 	
 	
