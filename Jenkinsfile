@@ -32,8 +32,10 @@ node {
     }
 	
 	stage('Build code and run app') {
-	
-        sh 'containerId= $(cat /proc/1/cpuset | cut -c9-)'
+	app.inside {
+        sh 'containerId= $(cat /proc/1/cpuset | cut -c 1-12)'
+		 }
+		 
 		sh 'echo "containerId= ${containerId}"' 
 		sh 'docker cp $PWD/. containerId:/app'
         app.inside {
