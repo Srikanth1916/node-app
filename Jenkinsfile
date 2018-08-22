@@ -13,6 +13,33 @@ node {
 
         app = docker.build("prince11itc/node:latest")
     }
+	
+	stage('Checkout deploy & run NodeJS App on port 3000') {
+                // Checkout our Git Repo to obtain the app.js NodeJS Express app
+                //
+                checkout([$class                           : 'GitSCM',
+                      branches                         : [[name: '*/master']],
+                      doGenerateSubmoduleConfigurations: false,
+                      extensions                       : [],
+                      submoduleCfg                     : [],
+                      userRemoteConfigs                : [[credentialsId: "pm11prince",
+                                                           url          : 'https://github.com/pm11prince/node-app.git']]])
+                // Copy all the contents of the current workspace dir to the / dir in the container
+                containerCopy() {}
+                // Run node app.js
+                nodejs(args: 'app.js', background: true) {}
+    }
+	
+	stage('Push image') {
+        /* Finally, we'll push the image with two tags:
+         * First, the incremental build number from Jenkins
+         * Second, the 'latest' tag.
+         * Pushing multiple tags is cheap, as all the layers are reused. */
+        docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
+        }
+    }
 
     stage('Test image') {
         /* Ideally, we would run a test framework against our image.
@@ -23,14 +50,4 @@ node {
         }
     }
 
-    stage('Push image') {
-        /* Finally, we'll push the image with two tags:
-         * First, the incremental build number from Jenkins
-         * Second, the 'latest' tag.
-         * Pushing multiple tags is cheap, as all the layers are reused. */
-        docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
-    }
 }
