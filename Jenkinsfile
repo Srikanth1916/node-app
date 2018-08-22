@@ -23,7 +23,7 @@ node {
                       doGenerateSubmoduleConfigurations: false,
                       extensions                       : [],
                       submoduleCfg                     : [],
-                      userRemoteConfigs                : [[credentialsId: "pm11prince",
+                      userRemoteConfigs                : [[credentialsId: "pm1prince",
                                                            url          : 'https://github.com/pm11prince/node-app.git']]])
                 // Copy all the contents of the current workspace dir to the / dir in the container
                 // containerCopy() {}
