@@ -32,9 +32,9 @@ node {
 	
 	stage('Build code and run app') {
         
+		docker cp $PWD/. prince11itc/node:latest:/app
         app.inside {
-			sh 'cp $PWD /app'
-            sh 'npm install -g'
+			sh 'npm install -g'
 			sh 'node start'
         }
     }
