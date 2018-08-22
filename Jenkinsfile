@@ -1,21 +1,34 @@
 node {
     def app
-	def containerId
-
-    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
-
-        //checkout scm
-    }
-
+	def app1
     stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
-
+        
         app = docker.build("prince11itc/node:latest")
     }
 	
-	stage('Checkout deploy') {
+	stage('Push image') {
+        
+		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
+        }
+    }
+	
+	stage('Pull image') {
+        
+		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+            Image.pull("${env.BUILD_NUMBER}")
+        }
+    }
+	
+	stage('Create container') {
+        
+		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+            app1=Image.pull("${env.BUILD_NUMBER}")
+        }
+    }
+	
+	stage('Checkout code') {
                 // Checkout our Git Repo to obtain the app.js NodeJS Express app
                 //
                 checkout([$class                           : 'GitSCM',
@@ -23,24 +36,13 @@ node {
                       doGenerateSubmoduleConfigurations: false,
                       extensions                       : [],
                       submoduleCfg                     : [],
-                      userRemoteConfigs                : [[credentialsId: "pm1prince",
+                      userRemoteConfigs                : [[credentialsId: "pm11prince",
                                                            url          : 'https://github.com/pm11prince/node-app.git']]])
-                // Copy all the contents of the current workspace dir to the / dir in the container
-                // containerCopy() {}
-                // Run node app.js
-                //nodejs(args: 'app.js', background: true) {}
     }
 	
 	stage('Build code and run app') {
-	/*app.inside {
-        sh 'containerId= $(cat /proc/1/cpuset | cut -c9-)'
-		 }
-		sh 'sudo docker ps -a'
-		sh 'echo "containerId= ${containerId}"' 
-		sh 'sudo docker cp ${workspace}/. containerId:/app'*/
-		
-		//checkout scm
-        app.inside('-v $WORKSPACE:/app -u root') {
+	
+			app1.inside('-v $WORKSPACE:/app -u root') {
 			sh """
 			cd /app/server
 			npm install -g
@@ -53,19 +55,8 @@ node {
         /* Ideally, we would run a test framework against our image.
          * For this example, we're using a Volkswagen-type approach ;-) */
 
-        app.inside {
+        app1.inside {
             sh 'echo "Tests passed"'
-        }
-    }
-	
-	stage('Push image') {
-        /* Finally, we'll push the image with two tags:
-         * First, the incremental build number from Jenkins
-         * Second, the 'latest' tag.
-         * Pushing multiple tags is cheap, as all the layers are reused. */
-        docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
         }
     }
 
