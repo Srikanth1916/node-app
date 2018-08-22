@@ -35,7 +35,7 @@ node {
 	app.inside {
         sh 'containerId= $(cat /proc/1/cpuset | cut -c 9-20)'
 		 }
-		 
+		sh 'docker ps -a'
 		sh 'echo "containerId= ${containerId}"' 
 		sh 'docker cp $PWD/. containerId:/app'
         app.inside {
