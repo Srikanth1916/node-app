@@ -14,7 +14,7 @@ node {
         app = docker.build("prince11itc/node:latest")
     }
 	
-	stage('Checkout deploy) {
+	stage('Checkout deploy') {
                 // Checkout our Git Repo to obtain the app.js NodeJS Express app
                 //
                 checkout([$class                           : 'GitSCM',
