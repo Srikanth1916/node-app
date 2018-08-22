@@ -41,6 +41,7 @@ node {
         app.inside('-v $WORKSPACE:/app -u root') {
 			sh """
 			ls /app
+			cd /app/server
 			npm install -g
 			node start
 			""" 
