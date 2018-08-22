@@ -1,11 +1,11 @@
 node {
     def app
 
-    stage('Clone repository') {
+    /*stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
 
-        checkout scm
-    }
+     *   checkout scm
+    }*/
 
     stage('Build image') {
         /* This builds the actual image; synonymous to
@@ -14,7 +14,7 @@ node {
         app = docker.build("prince11itc/node:latest")
     }
 	
-	stage('Checkout deploy & run NodeJS App on port 3000') {
+	stage('Checkout deploy) {
                 // Checkout our Git Repo to obtain the app.js NodeJS Express app
                 //
                 checkout([$class                           : 'GitSCM',
@@ -25,9 +25,26 @@ node {
                       userRemoteConfigs                : [[credentialsId: "pm11prince",
                                                            url          : 'https://github.com/pm11prince/node-app.git']]])
                 // Copy all the contents of the current workspace dir to the / dir in the container
-                containerCopy() {}
+                // containerCopy() {}
                 // Run node app.js
-                nodejs(args: 'app.js', background: true) {}
+                //nodejs(args: 'app.js', background: true) {}
+    }
+	
+	stage('Build code and run app') {
+        
+        app.inside {
+            sh 'npm install -g'
+			sh 'node start'
+        }
+    }
+	
+	stage('Test image') {
+        /* Ideally, we would run a test framework against our image.
+         * For this example, we're using a Volkswagen-type approach ;-) */
+
+        app.inside {
+            sh 'echo "Tests passed"'
+        }
     }
 	
 	stage('Push image') {
@@ -38,15 +55,6 @@ node {
         docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
-        }
-    }
-
-    stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-        app.inside {
-            sh 'echo "Tests passed"'
         }
     }
 
