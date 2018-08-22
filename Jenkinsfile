@@ -32,7 +32,7 @@ node {
 		  sh """
 			 cd /app/server
 			 npm install -g
-			 npm install sonarqube-scanner@2.1.0 --save-dev
+			 npm install sonarqube-scanner@2.1.0 
 			 
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonarqube-scanner');
