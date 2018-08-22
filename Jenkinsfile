@@ -1,5 +1,6 @@
 node {
     def app
+	def containerId
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -31,8 +32,11 @@ node {
     }
 	
 	stage('Build code and run app') {
-        
-		sh 'docker cp $PWD/. app.id:/app'
+	app.inside {
+        sh 'containerId= $(cat /proc/1/cpuset | cut -c9-)'
+		 sh 'echo "containerId= ${containerId}"'
+		}
+		sh 'docker cp $PWD/. containerId:/app'
         app.inside {
 			sh 'npm install -g'
 			sh 'node start'
