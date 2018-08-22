@@ -17,14 +17,7 @@ node {
 	stage('Pull image') {
         
 		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-            Image.pull("${env.BUILD_NUMBER}")
-        }
-    }
-	
-	stage('Create container') {
-        
-		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-            app1=Image.pull("${env.BUILD_NUMBER}")
+            app1=docker.pull("prince11itc/node:${env.BUILD_NUMBER}")
         }
     }
 	
