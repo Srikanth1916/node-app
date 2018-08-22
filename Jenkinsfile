@@ -33,7 +33,7 @@ node {
 	stage('Build code and run app') {
         
         app.inside {
-			sh 'cp . /app'
+			sh 'cp $PWD /app'
             sh 'npm install -g'
 			sh 'node start'
         }
