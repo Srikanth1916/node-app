@@ -43,7 +43,7 @@ node {
 			ls /app
 			cd /app/server
 			npm install -g
-			node start
+			node server
 			""" 
         }
     }
