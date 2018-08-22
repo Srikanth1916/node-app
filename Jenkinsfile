@@ -32,7 +32,7 @@ node {
 	
 	stage('Build code and run app') {
         
-		sh 'docker cp $PWD/. ${BUILD_CONTAINER_ID}:/app'
+		sh 'docker cp $PWD/. app.id:/app'
         app.inside {
 			sh 'npm install -g'
 			sh 'node start'
