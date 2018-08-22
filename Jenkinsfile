@@ -14,24 +14,7 @@ node {
         }
     }
 	
-	/*stage('Pull image') {
-        
-		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-            app1=docker.pull("prince11itc/node:${env.BUILD_NUMBER}")
-        }
-    }
 	
-	stage('Checkout code') {
-                // Checkout our Git Repo to obtain the app.js NodeJS Express app
-                //
-                checkout([$class                           : 'GitSCM',
-                      branches                         : [[name: '*/master']],
-                      doGenerateSubmoduleConfigurations: false,
-                      extensions                       : [],
-                      submoduleCfg                     : [],
-                      userRemoteConfigs                : [[credentialsId: "pm11prince",
-                                                           url          : 'https://github.com/pm11prince/node-app.git']]])
-    }*/
 	
 	stage('pull the image, Build code and run app') {
 	
