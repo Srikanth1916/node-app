@@ -31,18 +31,7 @@ node {
                 //nodejs(args: 'app.js', background: true) {}
     }
 	
-	stage('Build code and run app') {
-	app.inside {
-        sh 'containerId= $(cat /proc/1/cpuset | cut -c 9-20)'
-		 }
-		sh 'docker ps -a'
-		sh 'echo "containerId= ${containerId}"' 
-		sh 'docker cp $PWD/. containerId:/app'
-        app.inside {
-			sh 'npm install -g'
-			sh 'node start'
-        }
-    }
+	
 	
 	stage('Test image') {
         /* Ideally, we would run a test framework against our image.
