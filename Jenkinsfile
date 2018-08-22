@@ -39,6 +39,7 @@ node {
 		sh 'echo "containerId= ${containerId}"' 
 		sh 'sudo docker cp ${workspace}/. containerId:/app'*/
         app.inside {
+			sh 'cd /app/server'
 			sh 'npm install -g'
 			sh 'node start'
         }
