@@ -26,7 +26,7 @@ node {
              docker.image("prince11itc/node:${env.BUILD_NUMBER}").inside('-v $WORKSPACE:/app -u root') 
 			 {
 			 
-			 stage(Build npm ){
+			 stage('Build npm'){
 			 sh """
 			 cd /app/server
 			 npm install -g
@@ -34,7 +34,7 @@ node {
 			 """ 
 			 }
 			 
-			 stage(Sonar Analysis){
+			 stage('Sonar Analysis'){
 			 sh """
 			 cd /app/server
 			 
@@ -55,6 +55,12 @@ node {
 			""" 
 			 }
 			 
+			 stage('Start the Node App'){
+			 sh """
+			  cd /app/server
+			 forever start server.js
+			 """ 
+			 }
              }
          }
 	
