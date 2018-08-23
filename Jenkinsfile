@@ -1,11 +1,22 @@
 node {
     def app
-	
+	try {
+		notifyBuild('STARTED')
     stage('Build image') {
         
         app = docker.build("prince11itc/node:${env.BUILD_NUMBER}")
     }
+	} catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			throw e
+			} finally {
+			// Success or failure, always send notifications
+			notifyBuild(currentBuild.result)
+			}
 	
+	try {
+		notifyBuild('STARTED')
 	stage('Push image') {
         
 		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
@@ -13,6 +24,14 @@ node {
             app.push("latest")
         }
     }
+	} catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			throw e
+			} finally {
+			// Success or failure, always send notifications
+			notifyBuild(currentBuild.result)
+			}
 	
 	checkout(		  [$class                          : 'GitSCM',
                       branches                         : [[name: '*/master']],
@@ -25,7 +44,9 @@ node {
 			 docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
              docker.image("prince11itc/node:${env.BUILD_NUMBER}").inside('-v $WORKSPACE:/app -u root') 
 			 {
-			 
+			 try {
+				notifyBuild('STARTED')
+
 			 stage('Build npm'){
 			 sh """
 			 cd /app/server
@@ -33,7 +54,17 @@ node {
 			 npm install sonarqube-scanner --save-dev
 			 """ 
 			 }
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			throw e
+			} finally {
+			// Success or failure, always send notifications
+			notifyBuild(currentBuild.result)
+			}
 			 
+			 try {
+			 notifyBuild('STARTED')
 			 stage('Sonar Analysis'){
 			 sh """
 			 cd /app/server
@@ -55,13 +86,43 @@ node {
 			""" 
 			 }
 			 
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			throw e
+			} finally {
+			// Success or failure, always send notifications
+			notifyBuild(currentBuild.result)
+			}
+			
+			try {
+			notifyBuild('STARTED')
 			 stage('Start the Node App'){
 			 sh """
 			  cd /app/server
 			 forever start server.js
 			 """ 
 			 }
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			throw e
+			} finally {
+			// Success or failure, always send notifications
+			notifyBuild(currentBuild.result)
+			}
              }
          }
-	
+}
+
+def notifyBuild(String buildStatus = 'STARTED') {
+// build status of null means successful
+buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+emailext(
+  to: 'prince.mathew@itcinfotech.com',
+  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+  body: "details",
+  recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+)
 }
