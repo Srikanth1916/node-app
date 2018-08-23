@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-
+def doc-tag
 pipeline {
   agent none
   parameters {
@@ -8,12 +8,14 @@ pipeline {
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
 		string(name: 'Email_List', defaultValue: 'latest', description: 'Docker Image Tag')
 		}
- stages {
- 
- 	stage(){
-	steps{
-	script {
-	
+	stages {
+        stage('params') {
+            steps { 
+                doc-tag=${params.DOCKER_TAG}
+            }
+        }
+    }
+	}
 node {
     def app
 	try {
@@ -130,7 +132,7 @@ node {
              }
          }
 }
-}
+
 def notifyBuild(String buildStatus = 'STARTED') {
 // build status of null means successful
 buildStatus =  buildStatus ?: 'SUCCESSFUL'
@@ -141,10 +143,4 @@ emailext(
   body: "details",
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
 )
-}
-}
-
-}
-}
-}
 }
