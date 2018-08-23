@@ -40,7 +40,9 @@ node {
 			 serverUrl: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/',
 			 options : {
 			'sonar.sources': '.',
-			'sonar.inclusions' : 'server/**' // Entry point of your code
+			'sonar.projectName': 'Node-Project',
+			'sonar.language': 'js',
+			'sonar.inclusions' : 'server/**,resources/**' // Entry point of your code
 			}
 			}, () => {});
 			EOF
