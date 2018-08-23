@@ -57,6 +57,7 @@ node {
 			 
 			 stage(Start the Node App){
 			 sh """
+			  cd /app/server
 			 forever start server.js
 			 """ 
 			 }
