@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
-def doc-tag
+
+def tag
+
 pipeline {
   agent none
   parameters {
@@ -11,7 +13,7 @@ pipeline {
 	stages {
         stage('params') {
             steps { 
-                doc-tag=${params.DOCKER_TAG}
+                tag=${params.DOCKER_TAG}
             }
         }
     }
