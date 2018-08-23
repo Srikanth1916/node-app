@@ -1,10 +1,25 @@
-node {
+#!groovy
+
+pipeline {
+  agent none
+  parameters {
+        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
+		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
+		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+		string(name: 'Email_List', defaultValue: 'latest', description: 'Docker Image Tag')
+		}
+  stages {
+    stage('Docker Build') {
+      agent any
+      steps {
+	  
+	script {  
     def app
 	try {
-		notifyBuild('STARTED')
+		//notifyBuild('STARTED')
     stage('Build image') {
         
-        app = docker.build("prince11itc/node:${env.BUILD_NUMBER}")
+        app = docker.build("prince11itc/node:latest")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed
@@ -41,13 +56,13 @@ node {
                       userRemoteConfigs                : [[credentialsId: "pm11prince",
                                                            url          : 'https://github.com/pm11prince/node-app.git']]])
 			
-			 docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-             docker.image("prince11itc/node:${env.BUILD_NUMBER}").inside('-v $WORKSPACE:/app -u root') 
+	docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+    docker.image("prince11itc/node:latest}").inside('-v $WORKSPACE:/app -u root') 
 			 {
-			 try {
-				notifyBuild('STARTED')
+	try {
+		notifyBuild('STARTED')
 
-			 stage('Build npm'){
+		stage('Build npm'){
 			 sh """
 			 cd /app/server
 			 npm install -g
@@ -63,9 +78,9 @@ node {
 			notifyBuild(currentBuild.result)
 			}
 			 
-			 try {
-			 notifyBuild('STARTED')
-			 stage('Sonar Analysis'){
+	try {
+		notifyBuild('STARTED')
+		stage('Sonar Analysis'){
 			 sh """
 			 cd /app/server
 			 
@@ -95,9 +110,9 @@ node {
 			notifyBuild(currentBuild.result)
 			}
 			
-			try {
-			notifyBuild('STARTED')
-			 stage('Start the Node App'){
+	try {
+	    notifyBuild('STARTED')
+		stage('Start the Node App'){
 			 sh """
 			  cd /app/server
 			 forever start server.js
@@ -112,17 +127,20 @@ node {
 			notifyBuild(currentBuild.result)
 			}
              }
-         }
-}
+			 
+	def notifyBuild(String buildStatus = 'STARTED') {
+		// build status of null means successful
+		buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
-def notifyBuild(String buildStatus = 'STARTED') {
-// build status of null means successful
-buildStatus =  buildStatus ?: 'SUCCESSFUL'
-
-emailext(
-  to: 'prince.mathew@itcinfotech.com',
-  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-  body: "details",
-  recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-)
+		emailext(
+		  to: 'prince.mathew@itcinfotech.com',
+		  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+		  body: "details",
+		  recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+		)
+		} 
+		}
+	  }
+	}
+	}
 }
