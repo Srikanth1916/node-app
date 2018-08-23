@@ -13,7 +13,7 @@ pipeline {
 	stages {
         stage('params') {
             steps { 
-                tag=${params.DOCKER_TAG}
+                sh 'tag = ${params.DOCKER_TAG}'
             }
         }
     }
