@@ -14,8 +14,6 @@ node {
         }
     }
 	
-	//stage('pull the image, Checkout & Build code and perform Sonar analysis') {
-	
 	checkout(		  [$class                          : 'GitSCM',
                       branches                         : [[name: '*/master']],
                       doGenerateSubmoduleConfigurations: false,
@@ -64,9 +62,5 @@ node {
 			 }
              }
          }
-	//}
-	
-	
-	
 	
 }
