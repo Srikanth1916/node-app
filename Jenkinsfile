@@ -32,10 +32,10 @@ node {
 		  sh """
 			 cd /app/server
 			 npm install -g
-			 npm install sonar-scanner
+			 npm install sonarqube-scanner --save-dev
 			 
 			 cat > sonar-project.js <<- "EOF"
-			 const sonarqubeScanner = require('sonar-scanner');
+			 const sonarqubeScanner = require('sonarqube-scanner');
 			 sonarqubeScanner({
 			 serverUrl: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/',
 			 options : {
