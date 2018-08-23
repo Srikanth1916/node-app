@@ -127,7 +127,7 @@ pipeline {
 			notifyBuild(currentBuild.result)
 			}
              }
-			 
+}			 
 	def notifyBuild(String buildStatus = 'STARTED') {
 		// build status of null means successful
 		buildStatus =  buildStatus ?: 'SUCCESSFUL'
@@ -143,5 +143,4 @@ pipeline {
 	  }
 	}
 	}
-}
 }
