@@ -1,6 +1,6 @@
 node {
     def app
-	def app1
+	
     stage('Build image') {
         
         app = docker.build("prince11itc/node:${env.BUILD_NUMBER}")
@@ -10,13 +10,11 @@ node {
         
 		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
             app.push("${env.BUILD_NUMBER}")
-            //app.push("latest")
+            app.push("latest")
         }
     }
 	
-	
-	
-	stage('pull the image, Checkout & Build code and run app') {
+	//stage('pull the image, Checkout & Build code and perform Sonar analysis') {
 	
 	checkout(		  [$class                          : 'GitSCM',
                       branches                         : [[name: '*/master']],
@@ -29,10 +27,18 @@ node {
 			 docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
              docker.image("prince11itc/node:${env.BUILD_NUMBER}").inside('-v $WORKSPACE:/app -u root') 
 			 {
-		  sh """
+			 
+			 stage(Build npm ){
+			 sh """
 			 cd /app/server
 			 npm install -g
 			 npm install sonarqube-scanner --save-dev
+			 """ 
+			 }
+			 
+			 stage(Sonar Analysis){
+			 sh """
+			 cd /app/server
 			 
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonarqube-scanner');
@@ -47,12 +53,18 @@ node {
 			}, () => {});
 			EOF
 			
-			 node sonar-project.js
+			node sonar-project.js
+			""" 
+			 }
+			 
+			 stage(Start the Node App){
+			 sh """
 			 forever start server.js
 			 """ 
+			 }
              }
          }
-	}
+	//}
 	
 	
 	
