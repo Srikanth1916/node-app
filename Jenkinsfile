@@ -8,7 +8,12 @@ pipeline {
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
 		string(name: 'Email_List', defaultValue: 'latest', description: 'Docker Image Tag')
 		}
-	}
+ stages {
+ 
+ 	stage(){
+	steps{
+	script {
+	
 node {
     def app
 	try {
@@ -136,4 +141,10 @@ emailext(
   body: "details",
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
 )
+}
+
+
+}
+}
+}
 }
