@@ -142,7 +142,7 @@ emailext(
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
 )
 }
-
+}
 
 }
 }
