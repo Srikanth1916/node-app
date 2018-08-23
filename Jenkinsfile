@@ -37,14 +37,14 @@ node {
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonar-scanner');
 			 sonarqubeScanner({
-			 serverUrl: 'http://ec2-54-173-54-193.compute-1.amazonaws.com:9000/',
+			 serverUrl: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/',
 			 options : {
 			'sonar.sources': '.',
 			'sonar.inclusions' : 'server/**' // Entry point of your code
 			}
 			}, () => {});
 			EOF
-			ls /app/server
+			
 			 node sonar-project.js
 			 forever start server.js
 			 """ 
