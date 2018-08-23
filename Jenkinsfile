@@ -3,7 +3,7 @@
 def tag
 
 pipeline {
-  agent none
+  agent any
   parameters {
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
 		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
