@@ -74,14 +74,9 @@ pipeline {
 			 sh """
 			 cd /app/server
 			
-			packages = 'forever,sonarqube-scanner'
+			packages = ${params.NODE_PACKAGE_LIST}
 			
-			for i in $(echo ${packages} | sed "s/,/ /g")
-			do
-				
-				npm install "$i"
-				
-			done
+			echo '${packages}'
 			 """ 
 			 }
 			 } catch (e) {
