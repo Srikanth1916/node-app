@@ -74,7 +74,8 @@ pipeline {
 			 sh """
 			 cd /app/server
 			 
-			packages = ${params.NODE_PACKAGE_LIST}
+			//packages = ${params.NODE_PACKAGE_LIST}
+			packages = 'forever,sonarqube-scanner'
 			
 			for i in $(echo $packages | sed "s/,/ /g")
 			do
