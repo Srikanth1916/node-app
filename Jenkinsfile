@@ -9,6 +9,7 @@ pipeline {
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
 		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
 		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
@@ -58,7 +59,7 @@ pipeline {
                       extensions                       : [],
                       submoduleCfg                     : [],
                       userRemoteConfigs                : [[credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}",
-                                                           url          : "${params.DOCKERHUB_URL}"]]])
+                                                           url          : "${params.GIT_URL}"]]])
 			
 			 docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
              docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
