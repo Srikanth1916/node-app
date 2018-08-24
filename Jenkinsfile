@@ -142,7 +142,6 @@ pipeline {
 		  to: emailextrecipients([[$class: 'DevelopersRecipientProvider'],[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']]),,
 		  subject: "Build Failed: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
 		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been failed. Failed stage: [${stage}]"
-		  body: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]': Check console output at [${env.BUILD_URL}] [${env.BUILD_NUMBER}]"
 		)
 		}
 		
