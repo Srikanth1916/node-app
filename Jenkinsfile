@@ -76,8 +76,8 @@ pipeline {
 			 sh """
 			 cd /app/server
 			
-			 npm install -g /*build the code with npm*/
-			 npm install sonarqube-scanner --save-dev /*install the sonarqube-scanner*/
+			 npm install -g 
+			 npm install sonarqube-scanner --save-dev 
 			 """ 
 			 }
 			 } catch (e) {
