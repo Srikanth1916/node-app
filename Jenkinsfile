@@ -25,7 +25,7 @@ pipeline {
 	
   stage('Build image') {
         
-        app = docker.build("PRI:${params.DOCKER_TAG}")
+        app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed
