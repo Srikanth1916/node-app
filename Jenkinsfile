@@ -20,7 +20,7 @@ pipeline {
 		//notifyBuild('STARTED')
     stage('Build image') {
         
-        app = docker.build("prince11itc/node:${tag}")
+        app = docker.build("prince11itc/node:${params.DOCKER_TAG}")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed
