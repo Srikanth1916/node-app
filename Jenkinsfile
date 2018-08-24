@@ -15,7 +15,7 @@ pipeline {
 		
 		}
   stages {
-        stage('Collect the Job parameters') {
+        stage('Collect the parameters') {
             steps { 
                 script {
 		
@@ -76,8 +76,8 @@ pipeline {
 			 sh """
 			 cd /app/server
 			
-			 npm install -g 
-			 npm install sonarqube-scanner --save-dev 
+			 npm install -g #Build the code using NPM
+			 npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
 			 }
 			 } catch (e) {
