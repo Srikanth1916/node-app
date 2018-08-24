@@ -61,7 +61,7 @@ pipeline {
                                                            url          : "${params.DOCKERHUB_URL}"]]])
 			
 			 docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image(""${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
+             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
 			 {
 			 try {
 				notifyBuild('STARTED')
