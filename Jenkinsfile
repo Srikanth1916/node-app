@@ -24,11 +24,12 @@ pipeline {
 	try {
 	
   stage('Build image') {
-        
+        nodes = sh (script: 'sh git diff --name-only HEAD^^ Jenkinsfile', returnStdout: true).trim()
+		echo 
         app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
     }
 	} catch (e) {
-			// If there was an exception thrown, the build failed
+			// If there was an exception thrown, the build failed.
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Build image')
 			throw e
