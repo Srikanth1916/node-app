@@ -5,9 +5,12 @@ def tag
 pipeline {
   agent any
   parameters {
+		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
 		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
+		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
 		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
 		}
 	stages {
@@ -20,7 +23,7 @@ pipeline {
 		//notifyBuild('STARTED')
     stage('Build image') {
         
-        app = docker.build("prince11itc/node:${params.DOCKER_TAG}")
+        app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed
@@ -35,9 +38,9 @@ pipeline {
 		notifyBuild('STARTED')
 	stage('Push image') {
         
-		docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
+		docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
             app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+            app.push("${params.DOCKER_TAG}")
         }
     }
 	} catch (e) {
@@ -54,11 +57,11 @@ pipeline {
                       doGenerateSubmoduleConfigurations: false,
                       extensions                       : [],
                       submoduleCfg                     : [],
-                      userRemoteConfigs                : [[credentialsId: "pm11prince",
-                                                           url          : 'https://github.com/pm11prince/node-app.git']]])
+                      userRemoteConfigs                : [[credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}",
+                                                           url          : "${params.DOCKERHUB_URL}"]]])
 			
-			 docker.withRegistry('https://registry.hub.docker.com', 'prince11itc') {
-             docker.image("prince11itc/node:latest}").inside('-v $WORKSPACE:/app -u root') 
+			 docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
+             docker.image(""${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
 			 {
 			 try {
 				notifyBuild('STARTED')
@@ -88,10 +91,10 @@ pipeline {
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonarqube-scanner');
 			 sonarqubeScanner({
-			 serverUrl: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/',
+			 serverUrl: "${params.SONARQUBE_URL}",
 			 options : {
 			'sonar.sources': 'server/**,resources/**',
-			'sonar.projectName': 'Node-Project',
+			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}",
 			'sonar.inclusions' : 'server/**,resources/**' // Entry point of your code
 			}
 			}, () => {});
