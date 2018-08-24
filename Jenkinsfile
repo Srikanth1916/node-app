@@ -150,9 +150,9 @@ def notifyBuild(String buildStatus = 'STARTED') {
 buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
 emailext(
-  to: 'prince.mathew@itcinfotech.com',
+  to: '${params.Email_List}',
   subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-  body: "details",
+  body: "This is sample email related to job status",
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
 )
 }
