@@ -118,8 +118,8 @@ pipeline {
 			 sh """
 			  cd /app/server
 			 forever start server.js //start the app
-			 notifySuccessBuild() //Notify successful build.
 			 """ 
+			 notifySuccessBuild()
 			 }
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
@@ -127,7 +127,7 @@ pipeline {
 			notifyFailedBuild('Start the Node App')
 			throw e
 			} 
-             }
+          }
          }
 		}
        }
