@@ -94,9 +94,10 @@ pipeline {
 			 sonarqubeScanner({
 			 serverUrl: "${params.SONARQUBE_URL}",
 			 options : {
-			'sonar.sources': 'server/**,resources/**',
+			'sonar.sources': '.',
 			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}",
-			'sonar.inclusions' : 'server/**,resources/**' // Entry point of your code
+			'sonar.inclusions' : '.' // Entry point of your code,
+			'sonar.exclusions' : 'node_modules/**'
 			}
 			}, () => {});
 			EOF
