@@ -94,7 +94,7 @@ pipeline {
 			 sonarqubeScanner({
 			 serverUrl: "${params.SONARQUBE_URL}",
 			 options : {
-			'sonar.sources': '.',
+			'sonar.sources': 'routes',
 			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}",
 			'sonar.inclusions' : '.', // Entry point of your code
 			'sonar.exclusions' : 'node_modules/**'
