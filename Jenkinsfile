@@ -75,7 +75,7 @@ pipeline {
 			 cd /app/server
 			 
 			
-			packages = 'forever,sonarqube-scanner'
+			packages = 'forever'
 			
 			for i in $(echo $packages | sed "s/,/ /g")
 			do
