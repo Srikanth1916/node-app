@@ -13,6 +13,7 @@ pipeline {
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
 		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
+		string(name: 'NODE_PACKAGE_List', defaultValue: 'forever,sonarqube-scanner', description: 'Provide the comma separated Node package list which should be installed on the new Docker container. Like 'forever,sonarqube-scanner' ')
 		}
 	stages {
         stage('params') {
@@ -37,6 +38,7 @@ pipeline {
 	
 	try {
 		notifyBuild('STARTED')
+		
 	stage('Push image') {
         
 		docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
@@ -61,7 +63,8 @@ pipeline {
                       userRemoteConfigs                : [[credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}",
                                                            url          : "${params.GIT_URL}"]]])
 			
-			 docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
+			
+			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
              docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
 			 {
 			 try {
@@ -70,8 +73,17 @@ pipeline {
 			 stage('Build npm'){
 			 sh """
 			 cd /app/server
-			 npm install -g
-			 npm install sonarqube-scanner --save-dev
+			 
+			 
+			packages="${params.NODE_PACKAGE_List}"
+			for i in $(echo $packages | sed "s/,/ /g")
+			do
+				
+				npm install "$i"
+				
+			done
+			 //npm install -g
+			 //npm install sonarqube-scanner --save-dev
 			 """ 
 			 }
 			 } catch (e) {
@@ -85,6 +97,7 @@ pipeline {
 			 
 			 try {
 			 notifyBuild('STARTED')
+			 
 			 stage('Sonar Analysis'){
 			 sh """
 			 cd /app/server
@@ -94,7 +107,7 @@ pipeline {
 			 sonarqubeScanner({
 			 serverUrl: "${params.SONARQUBE_URL}",
 			 options : {
-			'sonar.sources': 'routes',
+			'sonar.sources': '.',
 			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}",
 			'sonar.inclusions' : '.', // Entry point of your code
 			'sonar.exclusions' : 'node_modules/**'
