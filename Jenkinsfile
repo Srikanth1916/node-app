@@ -96,7 +96,7 @@ pipeline {
 			 sh """
 			 cd /app/server
 			 
-			 // create the temporary .js file to execute the sonar scan.
+			 #create the temporary .js file to execute the sonar scan.
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonarqube-scanner');
 			 sonarqubeScanner({
