@@ -74,8 +74,14 @@ pipeline {
 			 sh """
 			 cd /app/server
 			
-			 npm install -g
-			 npm install sonarqube-scanner --save-dev
+			packages = ${params.NODE_PACKAGE_LIST}
+			
+			for i in $(echo ${packages} | sed "s/,/ /g")
+			do
+				
+				npm install "$i"
+				
+			done
 			 """ 
 			 }
 			 } catch (e) {
@@ -150,7 +156,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
 buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
 emailext(
-  to: '${params.Email_List}',
+  to: 'prince.mathew@itcinfotech.com',
   subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
   body: "This is sample email related to job status",
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
