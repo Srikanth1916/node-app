@@ -13,7 +13,7 @@ pipeline {
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
 		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
-		string(name: 'NODE_PACKAGE_List', defaultValue: 'forever,sonarqube-scanner', description: 'Provide the comma separated Node package list which should be installed on the new Docker container. Like 'forever,sonarqube-scanner' ')
+		string(name: 'NODE_PACKAGE_List', defaultValue: 'forever,sonarqube-scanner', description: 'Provide the comma separated Node package list which should be installed on the new Docker container. Like forever,sonarqube-scanner ')
 		}
 	stages {
         stage('params') {
