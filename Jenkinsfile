@@ -74,8 +74,7 @@ pipeline {
 			 sh """
 			 cd /app/server
 			 
-			 
-			def packages = '${params.NODE_PACKAGE_LIST}'
+			packages = ${params.NODE_PACKAGE_LIST}
 			
 			for i in $(echo $packages | sed "s/,/ /g")
 			do
