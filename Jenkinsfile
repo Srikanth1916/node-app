@@ -73,17 +73,9 @@ pipeline {
 			 stage('Build npm'){
 			 sh """
 			 cd /app/server
-			 
 			
-			packages = 'forever'
-			
-			for i in $(echo $packages | sed "s/,/ /g")
-			do
-				
-				npm install "$i"
-				
-			done
-			 
+			 npm install -g
+			 npm install sonarqube-scanner --save-dev
 			 """ 
 			 }
 			 } catch (e) {
