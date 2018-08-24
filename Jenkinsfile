@@ -8,18 +8,14 @@ pipeline {
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
 		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
-		string(name: 'Email_List', defaultValue: 'latest', description: 'Docker Image Tag')
+		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
 		}
 	stages {
         stage('params') {
             steps { 
-                sh 'tag = ${params.DOCKER_TAG}'
-            }
-        }
-    }
-	}
-node {
+                script {
     def app
+	
 	try {
 		//notifyBuild('STARTED')
     stage('Build image') {
@@ -94,9 +90,8 @@ node {
 			 sonarqubeScanner({
 			 serverUrl: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/',
 			 options : {
-			'sonar.sources': '.',
+			'sonar.sources': 'server/**,resources/**',
 			'sonar.projectName': 'Node-Project',
-			'sonar.language': 'js',
 			'sonar.inclusions' : 'server/**,resources/**' // Entry point of your code
 			}
 			}, () => {});
@@ -146,3 +141,7 @@ emailext(
   recipientProviders: [[$class: 'DevelopersRecipientProvider']]
 )
 }
+            }
+        }
+    }
+	}
