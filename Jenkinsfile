@@ -95,8 +95,6 @@ pipeline {
 			 options : {
 			'sonar.sources': '.',
 			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}", //Name of the project which will be created in the Sonar server
-			'sonar.inclusions' : '.', // 
-			'sonar.exclusions' : 'node_modules/**' //exclude the node modules from the scan
 			}
 			}, () => {});
 			EOF
