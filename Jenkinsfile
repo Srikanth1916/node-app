@@ -15,14 +15,14 @@ pipeline {
 		
 		}
   stages {
-        stage('Collect the parameters') {
-            steps { 
-                script {
+    stage('Collect the parameters') {
+      steps { 
+   script {
 		
     def app
 	
 	try {
-	notifyBuild('STARTED')
+	
   stage('Build image') {
         
         app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
@@ -30,14 +30,12 @@ pipeline {
 	} catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
+			notifyFailedBuild('Build image')
 			throw e
-			} finally {
-			// Success or failure, always send notifications
-			notifyBuild(currentBuild.result)
 			}
 	
 		try {
-			notifyBuild('STARTED')
+			
 		//Push the image into Docker hub	
   stage('Push image') {
         
@@ -47,13 +45,11 @@ pipeline {
 			}
 		}
 		} catch (e) {
-				// If there was an exception thrown, the build failed
-				currentBuild.result = "FAILED"
-				throw e
-				} finally {
-				// Success or failure, always send notifications
-				notifyBuild(currentBuild.result)
-				}
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			notifyFailedBuild('Push image')
+			throw e
+			}
 				
 // checkout the code in the current workspace 
 	  checkout(	[$class                          : 'GitSCM',
@@ -70,9 +66,7 @@ pipeline {
 			 {
 			 try {
 				
-			notifyBuild('STARTED')
-
- stage('Build npm'){
+ stage('Build NPM'){
 			 sh """
 			 cd /app/server
 			
@@ -83,15 +77,12 @@ pipeline {
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
+			notifyFailedBuild('Build NPM')
 			throw e
-			} finally {
-			// Success or failure, always send notifications
-			notifyBuild(currentBuild.result)
 			}
 			 
 			 try {
-			 notifyBuild('STARTED')
-			 
+			 			 
  stage('Sonar Analysis'){
 			 sh """
 			 cd /app/server
@@ -117,42 +108,50 @@ pipeline {
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
+			notifyFailedBuild('Sonar Analysis')
 			throw e
-			} finally {
-			// Success or failure, always send notifications
-			notifyBuild(currentBuild.result)
 			}
 			
 			try {
-			notifyBuild('STARTED')
+			
   stage('Start the Node App'){
 			 sh """
 			  cd /app/server
 			 forever start server.js //start the app
+			 notifySuccessBuild() //Notify successful build.
 			 """ 
 			 }
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
+			notifyFailedBuild('Start the Node App')
 			throw e
-			} finally {
-			// Success or failure, always send notifications
-			notifyBuild(currentBuild.result)
-			}
+			} 
              }
          }
 		}
        }
       }
     }
-}     // function to handle the notification.
-		def notifyBuild(String buildStatus = 'STARTED') {
-		// build status of null means successful
-		buildStatus =  buildStatus ?: 'SUCCESSFUL'
+}     
 
+// function to handle the failed build notification.
+		def notifyFailedBuild(String stage) {
+		
 		emailext(
 		  to: emailextrecipients([[$class: 'DevelopersRecipientProvider'],[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']]),,
-		  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+		  subject: "Build Failed: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been failed. Failed stage: [${stage}]"
 		  body: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]': Check console output at [${env.BUILD_URL}] [${env.BUILD_NUMBER}]"
+		)
+		}
+		
+// function to handle successful build notification.
+		def notifySuccessBuild() {
+		
+		emailext(
+		  to: emailextrecipients([[$class: 'DevelopersRecipientProvider'],[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']]),,
+		  subject: "Build Success: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been completed successfully"
 		)
 		}
