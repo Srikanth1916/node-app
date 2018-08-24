@@ -151,9 +151,8 @@ pipeline {
 		buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
 		emailext(
-		  to: 'prince.mathew@itcinfotech',
+		  to: emailextrecipients([[$class: 'DevelopersRecipientProvider'],[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']]),,
 		  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-		  body: "This is sample email related to job status",
-		  recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+		  body: "This is sample email related to job status"
 		)
 		}
