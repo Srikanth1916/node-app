@@ -96,7 +96,7 @@ pipeline {
 			 options : {
 			'sonar.sources': '.',
 			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}",
-			'sonar.inclusions' : '.' // Entry point of your code,
+			'sonar.inclusions' : '.', // Entry point of your code
 			'sonar.exclusions' : 'node_modules/**'
 			}
 			}, () => {});
