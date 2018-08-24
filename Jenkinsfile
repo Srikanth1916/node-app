@@ -5,13 +5,13 @@ pipeline {
   //All parameters which will be used to run the pipeline.
   parameters {
 		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
-        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
-		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node', description: 'Docker Image Name')
+        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: '', description: 'Dockerhub CredentialId')
+		string(name: 'DOCKER_IMAGE_NAME', defaultValue: '', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
-		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
-		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
+		string(name: 'GIT_URL', defaultValue: '', description: 'Git Url')
+		string(name: 'SONARQUBE_URL', defaultValue: '', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
-		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails')
+		string(name: 'Email_List', defaultValue: 'prince.mathew@itcinfotech', description: 'Emails for the notification')
 		
 		}
   stages {
@@ -151,7 +151,7 @@ pipeline {
 		buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
 		emailext(
-		  to: '${params.Email_List}',
+		  to: 'prince.mathew@itcinfotech',
 		  subject: "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
 		  body: "This is sample email related to job status",
 		  recipientProviders: [[$class: 'DevelopersRecipientProvider']]
