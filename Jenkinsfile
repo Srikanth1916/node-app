@@ -101,6 +101,7 @@ pipeline {
 			EOF
 			
 			node sonar-project.js //execute the sonar scan
+			rm sonar-project.js
 			""" 
 			 }
 			 
@@ -118,6 +119,22 @@ pipeline {
 			  cd /app/server
 			 forever start server.js //start the app
 			 """ 
+			 }
+			 
+  stage('Push artifacts to Artifactory'){
+			sh """
+			tar --exclude='.git' --exclude='.gitignore' -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz ${env.WORKSPACE}
+			curl -v \
+				-F "r=releases" \
+				-F "g=com.acme.widgets" \
+				-F "a=widget" \
+				-F "v=0.1-1" \
+				-F "p=tar.gz" \
+				-F "file=@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
+				-u admin:zicosadmin \
+				http://54.210.74.64:8081/nexus/content/repositories/test-repo/
+
+				""" 
 			 notifySuccessBuild()
 			 }
 			 } catch (e) {
