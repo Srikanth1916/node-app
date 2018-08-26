@@ -148,6 +148,11 @@ pipeline {
        }
       }
     }
+	post { 
+        always { 
+            cleanWs()
+        }
+    }
 }     
 
 // function to handle the failed build notification.
