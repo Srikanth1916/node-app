@@ -119,7 +119,13 @@ pipeline {
 			 forever start server.js //start the app
 			 """ 
 			 }
-			 
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			notifyFailedBuild('Start the Node App')
+			throw e
+			}
+			try {		 
   stage('Push artifacts to Artifactory'){
 			sh """
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
@@ -135,9 +141,16 @@ pipeline {
 				http://54.210.74.64:8081/nexus/content/repositories/test-repo/
 
 				""" 
-			 notifySuccessBuild()
+			 
 			 }
 			 
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			notifyFailedBuild('Push artifacts to Artifactory')
+			throw e
+			} 
+			try {		 
   stage('Tag Git') {
 
 		withCredentials([usernamePassword(credentialsId: "${params.GIT_CREDETIAL_ID}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -146,12 +159,13 @@ pipeline {
 				sh "git commit https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository}"
                 sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
             }
+			notifySuccessBuild()
         
     }
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
-			notifyFailedBuild('Start the Node App')
+			notifyFailedBuild('Tag Git')
 			throw e
 			} 
           }
