@@ -137,6 +137,16 @@ pipeline {
 				""" 
 			 notifySuccessBuild()
 			 }
+			 
+  stage('Tag Git') {
+
+		withCredentials([usernamePassword(credentialsId: '${params.GIT_CREDETIAL_ID}', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+
+                sh "git tag ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+            }
+        
+    }
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
@@ -153,12 +163,7 @@ pipeline {
         always { 
             cleanWs()
         }
-		withCredentials([usernamePassword(credentialsId: '${params.GIT_CREDETIAL_ID}', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-
-
-                sh "git tag ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
-                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
-            }
+		
     }
 }     
 
