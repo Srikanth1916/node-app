@@ -6,6 +6,7 @@ pipeline {
   parameters {
 		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
+		string(name: 'GIT_CREDETIAL_ID', defaultValue: 'pm11prince', description: 'Dockerhub CredentialId')
 		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node-base-img', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
 		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
@@ -56,7 +57,7 @@ pipeline {
 				  doGenerateSubmoduleConfigurations: false,
 				  extensions                       : [],
 				  submoduleCfg                     : [],
-				  userRemoteConfigs                : [[credentialsId: "${params.DOCKERHUB_CREDETIAL_ID}",
+				  userRemoteConfigs                : [[credentialsId: "${params.GIT_CREDETIAL_ID}",
 				  url          					   : "${params.GIT_URL}"]]])
 			
 //Pull the image from Docker hub.			
@@ -152,6 +153,12 @@ pipeline {
         always { 
             cleanWs()
         }
+		withCredentials([usernamePassword(credentialsId: '${params.GIT_CREDETIAL_ID}', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+
+
+                sh "git tag ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+            }
     }
 }     
 
