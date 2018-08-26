@@ -122,10 +122,10 @@ pipeline {
   stage('Push artifacts to Artifactory'){
 			sh """
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
-			tar --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
+			tar --exclude='./server/node_modules/**' --exclude='./.git/' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
 			curl -v \
 				-F "r=releases" \
-				-F "g=com.acme.widgets" \
+				-F "g=com.testpipe" \
 				-F "a=widget" \
 				-F "v=0.1-1" \
 				-F "p=tar.gz" \
