@@ -121,7 +121,8 @@ pipeline {
 			 
   stage('Push artifacts to Artifactory'){
 			sh """
-			tar --exclude='.git' --exclude='.gitignore' -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz ${env.WORKSPACE}
+			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
+			tar --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
 			curl -v \
 				-F "r=releases" \
 				-F "g=com.acme.widgets" \
