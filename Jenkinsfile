@@ -24,8 +24,6 @@ pipeline {
 	try {
 	
   stage('Build image') {
-        nodes = sh (script: 'sh git diff --name-only HEAD^^ Jenkinsfile', returnStdout: true).trim()
-		echo 
         app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
     }
 	} catch (e) {
