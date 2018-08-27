@@ -74,7 +74,7 @@ pipeline {
 			 sh """
 			 cd /app/server
 			npm install -g 
-			variable="sonarqube-scanner,grunt,forever,forever"
+			variable=sonarqube-scanner,grunt,forever,forever
 			for i in ${variable//,/ }
 			do
 				# call your procedure/other scripts here below
