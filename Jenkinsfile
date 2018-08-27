@@ -74,13 +74,8 @@ pipeline {
 			 sh """
 			 cd /app/server
 			npm install -g 
-			variable=sonarqube-scanner,grunt,forever,forever
-			for i in ${variable//,/ }
-			do
-				# call your procedure/other scripts here below
-				echo "$i"
-			done
-			 #npm install -g #Build the code using NPM
+			installPackage("sonarqube-scanner,grunt,forever,forever")
+			#npm install -g #Build the code using NPM
 			 #npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
 			 }
@@ -193,4 +188,13 @@ pipeline {
 		  subject: "Build Success: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
 		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been completed successfully"
 		)
+		}
+		
+		def installPackage(String packageList) {
+		variable=$packageList
+			for i in ${variable//,/ }
+			do
+				# install additional packages
+				npm install "$i"
+			done
 		}
