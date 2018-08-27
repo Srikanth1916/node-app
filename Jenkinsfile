@@ -195,6 +195,6 @@ pipeline {
 		str = packageList.split(',');
       
 		for( String values : str )
-		sh "npm install $values"
+		{sh "npm install $values"}
 			
 		}
