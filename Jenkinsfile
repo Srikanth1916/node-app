@@ -12,8 +12,12 @@ pipeline {
 		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
-		string(name: 'Email_List', defaultValue: '', description: 'Emails for the notification')
-		
+		string(name: 'NEXUS_REPO_NAME', defaultValue: 'test-repo-01', description: 'Nexus repository name')
+		string(name: 'NEXUS_GROUP_NAME', defaultValue: 'node-pipeline', description: 'Nexus Group name')
+		string(name: 'NEXUS_ARTIFACT_NAME', defaultValue: 'BUILD', description: 'Nexus Artifact name')
+		string(name: 'NEXUS_USER_NAME', defaultValue: 'admin', description: 'Nexus repository user name')
+		string(name: 'NEXUS_PASSWORD', defaultValue: 'zicosadmin', description: 'Nexus repository password')
+		string(name: 'NEXUS_URL', defaultValue: 'http://54.210.74.64:8081/nexus/service/local/artifact/maven/content', description: 'Nexus repository URL')
 		}
   stages {
     stage('Collect the parameters') {
@@ -131,14 +135,14 @@ pipeline {
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
 			tar --exclude='./server/node_modules' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
 			curl -v \
-				-F r="test-repo-01" \
-				-F g="node-pipeline" \
-				-F a="BUILD" \
+				-F r="${params.NEXUS_REPO_NAME}" \
+				-F g="${params.NEXUS_GROUP_NAME}" \
+				-F a="${params.NEXUS_ARTIFACT_NAME}" \
 				-F v="${env.BUILD_NUMBER}" \
 				-F p="tar.gz" \
 				-F file="@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
-				-u admin:zicosadmin \
-				http://54.210.74.64:8081/nexus/service/local/artifact/maven/content
+				-u ${params.NEXUS_USER_NAME}:${params.NEXUS_PASSWORD} \
+				${params.NEXUS_URL}
 
 				""" 
 			 
