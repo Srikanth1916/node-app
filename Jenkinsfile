@@ -132,7 +132,9 @@ pipeline {
 			tar --exclude='./server/node_modules' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
 			curl -v \
 				-F r="test-repo-01" \
-				-F v="BUILD_"${env.BUILD_NUMBER} \
+				-F g="node-pipeline" \
+				-F a="BUILD_" \
+				-F v="${env.BUILD_NUMBER}" \
 				-F p="tar.gz" \
 				-F file="@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
 				-u admin:zicosadmin \
