@@ -55,7 +55,15 @@ pipeline {
 			throw e
 			}
 				
-// checkout the code in the current workspace 
+			
+//Pull the image from Docker hub.			
+			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
+             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
+			 {
+			  try {
+				
+ stage('Checkout code'){
+			 // checkout the code in the current workspace 
 	  checkout(	[$class                          : 'GitSCM',
 				  branches                         : [[name: '*/master']],
 				  doGenerateSubmoduleConfigurations: false,
@@ -63,20 +71,20 @@ pipeline {
 				  submoduleCfg                     : [],
 				  userRemoteConfigs                : [[credentialsId: "${params.GIT_CREDETIAL_ID}",
 				  url          					   : "${params.GIT_URL}"]]])
-			
-//Pull the image from Docker hub.			
-			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
-			 {
+			 } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			notifyFailedBuild('Checkout code')
+			throw e
+			}
+			 
 			 try {
 				
  stage('Build NPM'){
 			 sh """
 			 cd /app/server
-			npm install -g 
-			installPackage("sonarqube-scanner,grunt,forever,forever")
-			#npm install -g #Build the code using NPM
-			 #npm install sonarqube-scanner --save-dev #install sonarqube-scanner
+			npm install -g #Build the code using NPM
+			npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
 			 }
 			 } catch (e) {
@@ -190,11 +198,3 @@ pipeline {
 		)
 		}
 		
-		def installPackage(String packageList) {
-		String[] str;
-		str = packageList.split(',');
-      
-		for( String values : str )
-		{sh "npm install $values"}
-			
-		}
