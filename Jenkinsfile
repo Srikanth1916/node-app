@@ -57,10 +57,10 @@ pipeline {
 			throw e
 			}
 				
-			
+			sh 'docker network create --driver bridge spadelite'
 //Pull the image from Docker hub.			
 			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside('-v $WORKSPACE:/app -u root') 
+             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").withRun('--network-alias splite --net spadelite -e "MINIO_ACCESS_KEY=mykey" -e "MINIO_SECRET_KEY=mysecret"', 'server /data').inside('--net spadelite -v $WORKSPACE:/app -u root') 
 			 {
 			  try {
 				
