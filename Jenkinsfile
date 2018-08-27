@@ -71,7 +71,8 @@ pipeline {
 				  submoduleCfg                     : [],
 				  userRemoteConfigs                : [[credentialsId: "${params.GIT_CREDETIAL_ID}",
 				  url          					   : "${params.GIT_URL}"]]])
-			 } catch (e) {
+			 }
+			} catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Checkout code')
