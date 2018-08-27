@@ -192,7 +192,7 @@ pipeline {
 		
 		def installPackage(String packageList) {
 		String[] str;
-		str = packageList.split('-');
+		str = packageList.split(',');
       
 		for( String values : str )
 		sh "npm install $values"
