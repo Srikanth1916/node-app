@@ -73,9 +73,15 @@ pipeline {
  stage('Build NPM'){
 			 sh """
 			 cd /app/server
-			
-			 npm install -g #Build the code using NPM
-			 npm install sonarqube-scanner --save-dev #install sonarqube-scanner
+			npm install -g 
+			variable="sonarqube-scanner,grunt,forever,forever"
+			for i in ${variable//,/ }
+			do
+				# call your procedure/other scripts here below
+				echo "$i"
+			done
+			 #npm install -g #Build the code using NPM
+			 #npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
 			 }
 			 } catch (e) {
