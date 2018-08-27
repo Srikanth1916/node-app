@@ -191,10 +191,10 @@ pipeline {
 		}
 		
 		def installPackage(String packageList) {
-		variable=$packageList
-			for i in ${variable//,/ }
-			do
-				# install additional packages
-				npm install "$i"
-			done
+		String[] str;
+		str = packageList.split('-');
+      
+		for( String values : str )
+		sh "npm install $values"
+			
 		}
