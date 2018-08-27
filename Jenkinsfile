@@ -7,7 +7,7 @@ pipeline {
 		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
         string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
 		string(name: 'GIT_CREDETIAL_ID', defaultValue: 'pm11prince', description: 'Dockerhub CredentialId')
-		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node-base-img', description: 'Docker Image Name')
+		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/NODE-base-img', description: 'Docker Image Name')
 		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
 		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
@@ -35,6 +35,7 @@ pipeline {
 			// If there was an exception thrown, the build failed.
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Build image')
+			cleanup()
 			throw e
 			}
 	
@@ -64,7 +65,7 @@ pipeline {
 				
  stage('Checkout code'){
 			 // checkout the code in the current workspace 
-	  checkout(	[$class                          : 'GitSCM',
+		checkout(	[$class                          : 'GitSCM',
 				  branches                         : [[name: '*/master']],
 				  doGenerateSubmoduleConfigurations: false,
 				  extensions                       : [],
@@ -198,4 +199,10 @@ pipeline {
 		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been completed successfully"
 		)
 		}
-		
+		def cleanup() {
+		sh """
+		docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
+		docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
+		docker volume ls -qf dangling=true | xargs -r docker volume rm
+		"""
+		}
