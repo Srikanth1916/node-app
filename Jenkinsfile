@@ -150,24 +150,7 @@ pipeline {
 			notifyFailedBuild('Push artifacts to Artifactory')
 			throw e
 			} 
-			try {		 
-  stage('Tag Git') {
-
-		withCredentials([usernamePassword(credentialsId: "${params.GIT_CREDETIAL_ID}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-
-                sh "git tag ${env.JOB_NAME}${env.BUILD_NUMBER}"
-				sh "git commit https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository}"
-                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${repository} ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
-            }
-			notifySuccessBuild()
-        
-    }
-			 } catch (e) {
-			// If there was an exception thrown, the build failed
-			currentBuild.result = "FAILED"
-			notifyFailedBuild('Tag Git')
-			throw e
-			} 
+			
           }
          }
 		}
