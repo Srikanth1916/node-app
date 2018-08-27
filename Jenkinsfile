@@ -131,14 +131,14 @@ pipeline {
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
 			tar --exclude='./server/node_modules' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
 			curl -v \
-				-F "r=releases" \
-				-F "g=com.testpipe" \
-				-F "a=widget" \
-				-F "v=0.1-1" \
-				-F "p=tar.gz" \
-				-F "file=@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
+				-F r="test-repo-01" \
+				-F g="com.testpipe" \
+				-F a="artifacts" \
+				-F v="BUILD_"${env.BUILD_NUMBER} \
+				-F p="tar.gz" \
+				-F file="@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
 				-u admin:zicosadmin \
-				http://54.210.74.64:8081/nexus/content/repositories/test-repo/
+				http://54.210.74.64:8081/nexus/service/local/artifact/maven/content
 
 				""" 
 			 
