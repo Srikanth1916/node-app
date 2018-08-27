@@ -133,7 +133,7 @@ pipeline {
 			curl -v \
 				-F r="test-repo-01" \
 				-F g="node-pipeline" \
-				-F a="BUILD_" \
+				-F a="BUILD" \
 				-F v="${env.BUILD_NUMBER}" \
 				-F p="tar.gz" \
 				-F file="@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz" \
