@@ -53,6 +53,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Push image')
+			cleanup()
 			throw e
 			}
 				
@@ -77,6 +78,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Checkout code')
+			cleanup()
 			throw e
 			}
 			 
@@ -93,6 +95,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Build NPM')
+			cleanup()
 			throw e
 			}
 			 
@@ -123,6 +126,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Sonar Analysis')
+			cleanup()
 			throw e
 			}
 			
@@ -138,6 +142,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Start the Node App')
+			cleanup()
 			throw e
 			}
 			try {		 
@@ -163,6 +168,7 @@ pipeline {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
 			notifyFailedBuild('Push artifacts to Artifactory')
+			cleanup()
 			throw e
 			} 
 			
@@ -174,6 +180,7 @@ pipeline {
     }
 	post { 
         always { 
+		    cleanup()
             cleanWs()
         }
 		
