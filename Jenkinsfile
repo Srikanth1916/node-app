@@ -131,7 +131,7 @@ pipeline {
 			EOF
 			
 			node sonar-project.js //execute the sonar scan
-			rm sonar-project.js
+			rm sonar-project.js   //remove the 
 			""" 
 			 }
 			 
@@ -219,6 +219,8 @@ pipeline {
 		  body: "This email is to notify that Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has been completed successfully"
 		)
 		}
+
+//function to clean docker container, volumes and network		
 		def cleanup() {
 		sh """
 		docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
