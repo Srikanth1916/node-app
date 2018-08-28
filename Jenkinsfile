@@ -73,7 +73,7 @@ pipeline {
 			
 //Pull the image from Docker hub.			
 			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside("--net spadelite${env.BUILD_NUMBER}") 
+             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside("--net spadelite${env.BUILD_NUMBER} -u root") 
 			 {
 			  try {
 				
@@ -99,9 +99,7 @@ pipeline {
 				
  stage('Build NPM'){
 			 sh """
-			 ls
 			 cd server
-			 ls
 			npm install -g #Build the code using NPM
 			npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
