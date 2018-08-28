@@ -73,7 +73,7 @@ pipeline {
 			
 //Pull the image from Docker hub.			
 			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside("--net spadelite${env.BUILD_NUMBER} -v $WORKSPACE:/app -u root") 
+             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside("--net spadelite${env.BUILD_NUMBER}") 
 			 {
 			  try {
 				
@@ -131,7 +131,7 @@ pipeline {
 			EOF
 			
 			node sonar-project.js //execute the sonar scan
-			rm sonar-project.js   //remove the 
+			rm sonar-project.js   #remove the temporary file. 
 			""" 
 			 }
 			 
