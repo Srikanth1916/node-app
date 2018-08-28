@@ -99,7 +99,9 @@ pipeline {
 				
  stage('Build NPM'){
 			 sh """
+			 ls
 			 cd /app/server
+			 ls
 			npm install -g #Build the code using NPM
 			npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
