@@ -4,20 +4,20 @@ pipeline {
   agent any
   //All parameters which will be used to run the pipeline.
   parameters {
-		string(name: 'DOCKERHUB_URL', defaultValue: '', description: 'Dockerhub Url')
-        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: '', description: 'Dockerhub CredentialId')
-		string(name: 'GIT_CREDETIAL_ID', defaultValue: '', description: 'Dockerhub CredentialId')
-		string(name: 'DOCKER_IMAGE_NAME', defaultValue: '', description: 'Docker Image Name')
-		string(name: 'DOCKER_TAG', defaultValue: '', description: 'Docker Image Tag')
-		string(name: 'GIT_URL', defaultValue: '', description: 'Git Url')
-		string(name: 'SONARQUBE_URL', defaultValue: '', description: 'SonarQube Url')
-		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: '', description: 'SonarQube Project Name')
-		string(name: 'NEXUS_REPO_NAME', defaultValue: '', description: 'Nexus repository name')
-		string(name: 'NEXUS_GROUP_NAME', defaultValue: '', description: 'Nexus Group name')
-		string(name: 'NEXUS_ARTIFACT_NAME', defaultValue: '', description: 'Nexus Artifact name')
-		string(name: 'NEXUS_USER_NAME', defaultValue: '', description: 'Nexus repository user name')
-		string(name: 'NEXUS_PASSWORD', defaultValue: '', description: 'Nexus repository password')
-		string(name: 'NEXUS_URL', defaultValue: '', description: 'Nexus repository URL')
+		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
+        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
+		string(name: 'GIT_CREDETIAL_ID', defaultValue: 'pm11prince', description: 'Dockerhub CredentialId')
+		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node-base-img', description: 'Docker Image Name')
+		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
+		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
+		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
+		string(name: 'NEXUS_REPO_NAME', defaultValue: 'test-repo-01', description: 'Nexus repository name')
+		string(name: 'NEXUS_GROUP_NAME', defaultValue: 'node-pipeline', description: 'Nexus Group name')
+		string(name: 'NEXUS_ARTIFACT_NAME', defaultValue: 'BUILD', description: 'Nexus Artifact name')
+		string(name: 'NEXUS_USER_NAME', defaultValue: 'admin', description: 'Nexus repository user name')
+		string(name: 'NEXUS_PASSWORD', defaultValue: 'zicosadmin', description: 'Nexus repository password')
+		string(name: 'NEXUS_URL', defaultValue: 'http://54.210.74.64:8081/nexus/service/local/artifact/maven/content', description: 'Nexus repository URL')
 		}
   stages {
     stage('Collect the parameters') {
