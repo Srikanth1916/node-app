@@ -12,12 +12,9 @@ pipeline {
 		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
 		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
 		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
-		string(name: 'NEXUS_REPO_NAME', defaultValue: 'test-repo-01', description: 'Nexus repository name')
-		string(name: 'NEXUS_GROUP_NAME', defaultValue: 'node-pipeline', description: 'Nexus Group name')
-		string(name: 'NEXUS_ARTIFACT_NAME', defaultValue: 'BUILD', description: 'Nexus Artifact name')
-		string(name: 'NEXUS_USER_NAME', defaultValue: 'admin', description: 'Nexus repository user name')
-		string(name: 'NEXUS_PASSWORD', defaultValue: 'zicosadmin', description: 'Nexus repository password')
-		string(name: 'NEXUS_URL', defaultValue: 'http://54.210.74.64:8081/nexus/service/local/artifact/maven/content', description: 'Nexus repository URL')
+		string(name: 'JFROG_USER_NAME', defaultValue: 'admin', description: 'JFrog repository user name')
+		string(name: 'JFROG_PASSWORD', defaultValue: 'admin@123', description: 'JFrog repository password')
+		string(name: 'JFROG_URL', defaultValue: 'http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/', description: 'JFrog repository URL')
 		}
   stages {
     stage('Collect the parameters') {
@@ -162,8 +159,8 @@ pipeline {
   stage('Push artifacts to Artifactory'){
 			sh """
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
-			tar --exclude='./server/node_modules' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
-			curl -u admin:admin@123 -X PUT "http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/" -T "./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
+			tar --exclude='./server/node_modules' --exclude='./server/.scannerwork' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
+			curl -u "${params.JFROG_USER_NAME}":"${params.JFROG_PASSWORD}" -X PUT "${params.JFROG_URL}" -T "./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
 
 				""" 
 			 
