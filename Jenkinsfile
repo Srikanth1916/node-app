@@ -163,7 +163,7 @@ pipeline {
 			sh """
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
 			tar --exclude='./server/node_modules' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
-			curl -u admin:admin@123 -X PUT "http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/" -T "@./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
+			curl -u admin:admin@123 -X PUT "http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/" -T "./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
 
 				""" 
 			 
