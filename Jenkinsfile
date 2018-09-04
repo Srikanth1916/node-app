@@ -3,19 +3,19 @@
 pipeline {
   agent any
   //All parameters which will be used to run the pipeline.
-  parameters {
-		string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
-        string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
-		string(name: 'GIT_CREDETIAL_ID', defaultValue: 'pm11prince', description: 'Dockerhub CredentialId')
-		string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node-base-img', description: 'Docker Image Name')
-		string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
-		string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
-		string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
-		string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
-		string(name: 'JFROG_USER_NAME', defaultValue: 'admin', description: 'JFrog repository user name')
-		string(name: 'JFROG_PASSWORD', defaultValue: 'admin@123', description: 'JFrog repository password')
-		string(name: 'JFROG_URL', defaultValue: 'http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/', description: 'JFrog repository URL')
-		}
+  //parameters {
+	//	string(name: 'DOCKERHUB_URL', defaultValue: 'https://registry.hub.docker.com', description: 'Dockerhub Url')
+   //     string(name: 'DOCKERHUB_CREDETIAL_ID', defaultValue: 'prince11itc', description: 'Dockerhub CredentialId')
+	//	string(name: 'GIT_CREDETIAL_ID', defaultValue: 'pm11prince', description: 'Dockerhub CredentialId')
+	//	string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'prince11itc/node-base-img', description: 'Docker Image Name')
+	//	string(name: 'DOCKER_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+	//	string(name: 'GIT_URL', defaultValue: 'https://github.com/pm11prince/node-app.git', description: 'Git Url')
+	//	string(name: 'SONARQUBE_URL', defaultValue: 'http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/', description: 'SonarQube Url')
+	//	string(name: 'SONARQUBE_PROJECT_NAME', defaultValue: 'Node-Project', description: 'SonarQube Project Name')
+	//	string(name: 'JFROG_USER_NAME', defaultValue: 'admin', description: 'JFrog repository user name')
+	//	string(name: 'JFROG_PASSWORD', defaultValue: 'admin@123', description: 'JFrog repository password')
+	//	string(name: 'JFROG_URL', defaultValue: 'http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/', description: 'JFrog repository URL')
+	//	}
   stages {
     stage('Collect the parameters') {
       steps { 
@@ -26,7 +26,7 @@ pipeline {
 	try {
 	
   stage('Build image') {
-        app = docker.build("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}")
+        app = docker.build("prince11itc/node-base-img:latest")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed.
@@ -41,9 +41,9 @@ pipeline {
 		//Push the image into Docker hub	
   stage('Push image') {
         
-		docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
+		docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
             app.push("${env.BUILD_NUMBER}")//tag the image with the current build no.
-            app.push("${params.DOCKER_TAG}") // tag the image with the param tag
+            app.push("latest") // tag the image with the param tag
 			}
 		}
 		} catch (e) {
@@ -69,8 +69,8 @@ pipeline {
 			}
 			
 //Pull the image from Docker hub.			
-			docker.withRegistry("${params.DOCKERHUB_URL}", "${params.DOCKERHUB_CREDETIAL_ID}") {
-             docker.image("${params.DOCKER_IMAGE_NAME}:${params.DOCKER_TAG}").inside("--net spadelite${env.BUILD_NUMBER} -u root") 
+			docker.withRegistry("https://registry.hub.docker.com", "pm11prince") {
+             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root") 
 			 {
 			  try {
 				
@@ -81,8 +81,8 @@ pipeline {
 				  doGenerateSubmoduleConfigurations: false,
 				  extensions                       : [],
 				  submoduleCfg                     : [],
-				  userRemoteConfigs                : [[credentialsId: "${params.GIT_CREDETIAL_ID}",
-				  url          					   : "${params.GIT_URL}"]]])
+				  userRemoteConfigs                : [[credentialsId: "pm11prince",
+				  url          					   : "https://github.com/pm11prince/node-app.git"]]])
 			 }
 			} catch (e) {
 			// If there was an exception thrown, the build failed
@@ -119,10 +119,10 @@ pipeline {
 			 cat > sonar-project.js <<- "EOF"
 			 const sonarqubeScanner = require('sonarqube-scanner');
 			 sonarqubeScanner({
-			 serverUrl: "${params.SONARQUBE_URL}",// Sonar server url param
+			 serverUrl: "http://ec2-54-156-240-215.compute-1.amazonaws.com:9000/",// Sonar server url param
 			 options : {
 			'sonar.sources': '.',
-			'sonar.projectName': "${params.SONARQUBE_PROJECT_NAME}", //Name of the project which will be created in the Sonar server
+			'sonar.projectName': "Node-Project", //Name of the project which will be created in the Sonar server
 			}
 			}, () => {});
 			EOF
@@ -160,7 +160,7 @@ pipeline {
 			sh """
 			touch ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz
 			tar --exclude='./server/node_modules' --exclude='./server/.scannerwork' --exclude='./.git' --exclude='./.gitignore' --exclude=${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz -zcvf ${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz .
-			curl -u "${params.JFROG_USER_NAME}":"${params.JFROG_PASSWORD}" -X PUT "${params.JFROG_URL}" -T "./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
+			curl -u "admin":"admin@123" -X PUT "http://ec2-34-238-216-133.compute-1.amazonaws.com:8081/artifactory/Test-Repo/" -T "./${env.JOB_NAME}${env.BUILD_NUMBER}.tar.gz"
 
 				""" 
 			 
