@@ -143,7 +143,7 @@ pipeline {
 			stage("Quality Gate"){
     
         
-        unstash 'sonar-report-task'
+        
         def props = utils.getProperties("/.scannerwork/report-task.txt")
         echo "properties=${props}"
         def sonarServerUrl=props.getProperty('serverUrl')
