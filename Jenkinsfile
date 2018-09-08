@@ -26,7 +26,7 @@ pipeline {
 	try {
 	
   stage('Build image') {
-        app = docker.build("prince11itc/node-base-img:latest")
+        //app = docker.build("prince11itc/node-base-img:latest")
     }
 	} catch (e) {
 			// If there was an exception thrown, the build failed.
@@ -41,10 +41,10 @@ pipeline {
 		//Push the image into Docker hub	
   stage('Push image') {
         
-		docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
-            app.push("${env.BUILD_NUMBER}")//tag the image with the current build no.
-            app.push("latest") // tag the image with the param tag
-			}
+		//docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
+         //   app.push("${env.BUILD_NUMBER}")//tag the image with the current build no.
+         //   app.push("latest") // tag the image with the param tag
+			//}
 		}
 		} catch (e) {
 			// If there was an exception thrown, the build failed
@@ -70,7 +70,7 @@ pipeline {
 			
 //Pull the image from Docker hub.			
 			docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
-             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root -d") 
+             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root -d 5000:5000") 
 			 {
 			  try {
 				
@@ -145,7 +145,7 @@ pipeline {
   stage('Start the Node App'){
 			 sh """
 			  cd server
-			 node server.js //start the app
+			 nohup node server.js & //start the app
 			 curl localhost:5000/sessions
 			 """ 
 			 }
