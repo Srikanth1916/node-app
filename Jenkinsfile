@@ -143,7 +143,7 @@ pipeline {
 			stage("Quality Gate"){
     
        
-node("any") {        
+node("none") {        
         def props = utils.getProperties("/.scannerwork/report-task.txt")
         echo "properties=${props}"
         def sonarServerUrl=props.getProperty('serverUrl')
