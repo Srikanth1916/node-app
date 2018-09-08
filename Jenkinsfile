@@ -70,7 +70,7 @@ pipeline {
 			
 //Pull the image from Docker hub.			
 			docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
-             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root") 
+             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root -d") 
 			 {
 			  try {
 				
@@ -96,7 +96,7 @@ pipeline {
 				
  stage('Build NPM'){
 			 sh """
-			 cd server
+			cd server
 			npm install -g #Build the code using NPM
 			npm install sonarqube-scanner --save-dev #install sonarqube-scanner
 			 """ 
@@ -146,6 +146,7 @@ pipeline {
 			 sh """
 			  cd server
 			 forever start server.js //start the app
+			 curl localhost:5000/sessions
 			 """ 
 			 }
 			 } catch (e) {
