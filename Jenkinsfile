@@ -148,7 +148,7 @@ pipeline {
 			 node server.js &
 			 sleep 5
 			 curl http://localhost:5000/sessions
-			 sleep 500
+			 
 			 """ 
 			 }
 			 } catch (e) {
