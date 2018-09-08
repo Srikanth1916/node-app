@@ -141,7 +141,7 @@ pipeline {
 			}
 			try{
 			stage("Quality Gate"){
-    node("sonar") {
+    
         deleteDir()
         unstash 'sonar-report-task'
         def props = utils.getProperties("/.scannerwork/report-task.txt")
@@ -163,7 +163,7 @@ pipeline {
           if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
             error  "Quality Gate failure"
           }
-   }
+   
 }
   
   } catch (e) {
