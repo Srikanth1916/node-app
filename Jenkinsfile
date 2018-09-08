@@ -70,7 +70,7 @@ pipeline {
 			
 //Pull the image from Docker hub.			
 			docker.withRegistry("https://registry.hub.docker.com", "prince11itc") {
-             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root -d 5000:5000") 
+             docker.image("prince11itc/node-base-img:latest").inside("--net spadelite${env.BUILD_NUMBER} -u root -d") 
 			 {
 			  try {
 				
