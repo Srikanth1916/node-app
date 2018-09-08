@@ -147,7 +147,7 @@ pipeline {
 			  cd server
 			 node server.js &
 			 sleep 5
-			 curl http://localhost:1000/sessions
+			 curl http://localhost:5000/sessions
 			 """ 
 			 }
 			 } catch (e) {
