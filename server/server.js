@@ -20,6 +20,6 @@ app.all('*', function(req, res, next) {
 app.get('/sessions', sessions.findAll);
 app.get('/sessions/:id', sessions.findById);
 
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 1000);
 
 app.listen(app.get('port'));
