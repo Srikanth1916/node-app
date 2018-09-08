@@ -139,6 +139,32 @@ pipeline {
 			cleanup()
 			throw e
 			}
+			try{
+			stage ("SonarQube Quality Gate") {
+     steps {
+        script {
+           STAGE_NAME = "SonarQube Gatekeeper"
+
+           if (BRANCH_NAME == "develop") {
+              echo "In 'develop' branch, skip."
+           }
+           else { // this is a PR build, fail on threshold spill
+              def qualitygate = waitForQualityGate()
+              if (qualitygate.status != "OK") {
+                 error "Pipeline aborted due to quality gate coverage failure: ${qualitygate.status}"
+              } 
+           }
+        }
+     }
+  } 
+  
+  } catch (e) {
+			// If there was an exception thrown, the build failed
+			currentBuild.result = "FAILED"
+			notifyFailedBuild('Sonar Quality Gate')
+			cleanup()
+			throw e
+			}
 			
 			try {
 			
