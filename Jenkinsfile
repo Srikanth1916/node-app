@@ -145,7 +145,7 @@ pipeline {
   stage('Start the Node App'){
 			 sh """
 			  cd server
-			 node server.js //start the app
+			 node server.js & //start the app
 			 curl http://localhost:5000/sessions
 			 """ 
 			 }
