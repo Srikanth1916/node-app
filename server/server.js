@@ -23,3 +23,4 @@ app.get('/sessions/:id', sessions.findById);
 app.set('port', process.env.PORT || 1000);
 
 app.listen(app.get('port'));
+console.log('Express server listening on port ' + app.get('port'));
