@@ -142,7 +142,8 @@ pipeline {
 			try{
 			stage("Quality Gate"){
     
-        
+        steps { 
+   script {
         
         def props = utils.getProperties("/.scannerwork/report-task.txt")
         echo "properties=${props}"
@@ -164,6 +165,8 @@ pipeline {
             error  "Quality Gate failure"
           }
    
+}
+}
 }
   
   } catch (e) {
