@@ -146,6 +146,7 @@ pipeline {
 			 sh """
 			  cd server
 			 node server.js &
+			 sleep 5
 			 curl http://localhost:1000/sessions
 			 """ 
 			 }
