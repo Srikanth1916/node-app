@@ -140,13 +140,31 @@ pipeline {
 			throw e
 			}
 			try{
-			stage ("SonarQube Quality Gate") {
-              def qualitygate = waitForQualityGate()
-              if (qualitygate.status != "OK") {
-                 error "Pipeline aborted due to quality gate coverage failure: ${qualitygate.status}"
-				 throw e
-              } 
-  } 
+			stage("Quality Gate"){
+    node("sonar") {
+        deleteDir()
+        unstash 'sonar-report-task'
+        def props = utils.getProperties("/.scannerwork/report-task.txt")
+        echo "properties=${props}"
+        def sonarServerUrl=props.getProperty('serverUrl')
+        def ceTaskUrl= props.getProperty('ceTaskUrl')
+        def ceTask
+        def URL url = new URL(ceTaskUrl)
+          timeout(time: 1, unit: 'MINUTES') {
+            waitUntil {
+              ceTask = utils.jsonParse(url)
+              echo ceTask.toString()
+              return "SUCCESS".equals(ceTask["task"]["status"])
+            }
+          }
+          url = new URL(sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"] )
+          def qualitygate =  utils.jsonParse(url)
+          echo qualitygate.toString()
+          if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
+            error  "Quality Gate failure"
+          }
+   }
+}
   
   } catch (e) {
 			// If there was an exception thrown, the build failed
