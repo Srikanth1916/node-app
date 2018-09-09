@@ -143,25 +143,29 @@ pipeline {
 			stage("Quality Gate"){
     
        
-        def props = utils.getProperties("./.scannerwork/report-task.txt")
-        echo "properties=${props}"
-        def sonarServerUrl=props.getProperty('serverUrl')
-        def ceTaskUrl= props.getProperty('ceTaskUrl')
-        def ceTask
-        def URL url = new URL(ceTaskUrl)
-          timeout(time: 1, unit: 'MINUTES') {
-            waitUntil {
-              ceTask = utils.jsonParse(url)
-              echo ceTask.toString()
-              return "SUCCESS".equals(ceTask["task"]["status"])
-            }
-          }
-          url = new URL(sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"] )
-          def qualitygate =  utils.jsonParse(url)
-          echo qualitygate.toString()
-          if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
-            error  "Quality Gate failure"
-          }
+        withSonarQubeEnv('SONAR 6.4') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "cat .scannerwork/report-task.txt"
+                    def props = readProperties  file: '.scannerwork/report-task.txt'
+                    echo "properties=${props}"
+                    def sonarServerUrl=props['serverUrl']
+                    def ceTaskUrl= props['ceTaskUrl']
+                    def ceTask
+                    timeout(time: 1, unit: 'MINUTES') {
+                        waitUntil {
+                            def response = httpRequest ceTaskUrl
+                            ceTask = readJSON text: response.content
+                            echo ceTask.toString()
+                            return "SUCCESS".equals(ceTask["task"]["status"])
+                        }
+                    }
+                    def response2 = httpRequest url : sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"], authentication: 'jenkins_scanner'
+                    def qualitygate =  readJSON text: response2.content
+                    echo qualitygate.toString()
+                    if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
+                        error  "Quality Gate failure"
+                    }
+                }
    
 }
   
