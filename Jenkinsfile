@@ -141,7 +141,7 @@ pipeline {
 			}
 			try{
 			stage('SonarQube analysis') {
-      steps {
+      
         script {
           // requires SonarQube Scanner 2.8+
           scannerHome = tool 'sonarqube'
@@ -149,7 +149,7 @@ pipeline {
         withSonarQubeEnv('SonarQube Scanner') {
           sh "${scannerHome}/bin/sonar-scanner"
         }
-      }
+      
     }
 	
 	 stage("Quality Gate") {
