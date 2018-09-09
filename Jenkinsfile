@@ -143,8 +143,7 @@ pipeline {
 			stage("Quality Gate"){
     
        
-node("none") {        
-        def props = utils.getProperties("/.scannerwork/report-task.txt")
+        def props = utils.getProperties("./.scannerwork/report-task.txt")
         echo "properties=${props}"
         def sonarServerUrl=props.getProperty('serverUrl')
         def ceTaskUrl= props.getProperty('ceTaskUrl')
@@ -164,8 +163,6 @@ node("none") {
             error  "Quality Gate failure"
           }
    
-
-}
 }
   
   } catch (e) {
