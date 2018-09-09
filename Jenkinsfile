@@ -112,6 +112,7 @@ pipeline {
 			 try {
 			 			 
  stage('Sonar Analysis'){
+ withSonarQubeEnv('sonarqube') {
 			 sh """
 			 cd server
 			 
@@ -131,7 +132,10 @@ pipeline {
 			rm sonar-project.js   #remove the temporary file. 
 			""" 
 			 }
-			 
+			  timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+			 }
 			 } catch (e) {
 			// If there was an exception thrown, the build failed
 			currentBuild.result = "FAILED"
@@ -139,35 +143,7 @@ pipeline {
 			cleanup()
 			throw e
 			}
-			try{
-			stage('SonarQube analysis') {
-      
-        script {
-          // requires SonarQube Scanner 2.8+
-          scannerHome = tool 'sonarqube'
-        }
-        withSonarQubeEnv('SonarQube Scanner') {
-          sh "${scannerHome}/bin/sonar-scanner"
-        }
-      
-    }
-	
-	 stage("Quality Gate") {
-  timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-    if (qg.status != 'OK') {
-      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-    }
-  }
-}
-  
-  } catch (e) {
-			// If there was an exception thrown, the build failed
-			currentBuild.result = "FAILED"
-			notifyFailedBuild('Sonar Quality Gate')
-			cleanup()
-			throw e
-			}
+			
 			
 			try {
 			
