@@ -143,7 +143,7 @@ pipeline {
 			stage("Quality Gate"){
     
        
-        withSonarQubeEnv('SONAR 6.4') {
+        withSonarQubeEnv('SONAR 6.5') {
                     sh "${scannerHome}/bin/sonar-scanner"
                     sh "cat .scannerwork/report-task.txt"
                     def props = readProperties  file: '.scannerwork/report-task.txt'
